@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ots
+      MYSQL_ROOT_PASSWORD: nostalrius
+  ots:
+    build: .
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 7171:7171
+      - 7172:7172
+  web:
+    build: ./Gesior2012
+    depends_on:
+      - db
+    ports:
+      - 7177:80
+    volumes:
+      - ./Gesior2012:/var/www/html
+      - .:/ots
+
+volumes:
+  data:
